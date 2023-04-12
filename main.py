@@ -1,10 +1,24 @@
-
 def main():
     word1 = "replace"
     word2 = "delete"
-    table = levensthein(word1, word2)
-    for line in table:
-        print(line)
+    print(f"levensthein:    {levensthein(word1, word2)}")
+    print(f"hamming:        {hamming(word1, word2)}")
+
+
+def hamming(word1, word2):
+    a, b = len(word1), len(word2)
+    if a > b:
+        for _ in range(a - b):
+            word2 += " "
+    elif b > a:
+        for _ in range(b - a):
+            word1 += " "
+
+    distance = 0
+    for i in range(len(word1)):
+        if word1[i] != word2[i]:
+            distance += 1
+    return distance
 
 
 def levensthein(word1, word2):
@@ -27,7 +41,7 @@ def levensthein(word1, word2):
         for j in range(1, a):
             table[i][j] = min(table[i - 1][j] + 1, table[i][j - 1] + 1,
                               table[i - 1][j - 1] + C(word1[j - 1], word2[i - 1]))
-    return table
+    return table[b - 1][a - 1]
 
 
 if __name__ == "__main__":
