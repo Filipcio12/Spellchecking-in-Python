@@ -1,6 +1,10 @@
 import distance as ds
 
 
+def suggest_word(word):
+    pass
+
+
 def main():
     word1 = "car"
     word2 = "cat"
