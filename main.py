@@ -1,8 +1,35 @@
 def main():
-    word1 = "replace"
-    word2 = "delete"
+    word1 = "car"
+    word2 = "apple"
     print(f"levensthein:    {levensthein(word1, word2)}")
     print(f"hamming:        {hamming(word1, word2)}")
+    print(f"indel:          {indel(word1, word2)}")
+
+
+def indel(word1, word2):
+    """Indel is a variation of levensthein that
+    only allows insertions and deletions but no
+    replacements"""
+    # Table creation
+    a, b = len(word1) + 1, len(word2) + 1
+    table = [[0 for _ in range(a)]
+             for _ in range(b)]
+    for x in range(1, a):
+        table[0][x] = x
+    for y in range(1, b):
+        table[y][0] = y
+
+    def C(c1, c2):
+        if c1 == c2:
+            return 0
+        return float('inf')
+
+    # Filling the table
+    for i in range(1, b):
+        for j in range(1, a):
+            table[i][j] = min(table[i - 1][j] + 1, table[i][j - 1] + 1,
+                              table[i - 1][j - 1] + C(word1[j - 1], word2[i - 1]))
+    return table[b - 1][a - 1]
 
 
 def hamming(word1, word2):
