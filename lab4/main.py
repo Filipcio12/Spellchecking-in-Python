@@ -1,5 +1,4 @@
 import distance as ds
-from tqdm import tqdm
 
 
 def suggest_word(misspell, dictionary):
@@ -16,6 +15,34 @@ def suggest_word(misspell, dictionary):
             best_distance = distance
 
     return best_word
+
+
+def hash_words(dictionary):
+    hash_table = {}
+    for word in dictionary:
+        c = frequent_char(word)
+        if c not in hash_table:
+            hash_table[c] = [word]
+        elif word not in hash_table[c]:
+            hash_table[c].append(word)
+    return hash_table
+
+
+def frequent_char(word):
+    frequency = {}
+    for c in word:
+        if c in frequency:
+            frequency[c] += 1
+        else:
+            frequency[c] = 1
+    chars = frequency.items()
+    max_char = max(chars, key=lambda c: c[1])
+    return max_char[0]
+
+
+def suggest_word_mod(misspell, hash_table):
+    dictionary = hash_table[frequent_char(misspell)]
+    suggest_word(misspell, dictionary)
 
 
 def main():
@@ -40,6 +67,8 @@ def main():
 
     file = open("corrected.txt", "w")
 
+    hash_table = hash_words(dictionary)
+
     word, new_text = "", ""
 
     for line in text:
@@ -47,7 +76,7 @@ def main():
         for c in line:
             if c == ' ' or c == '\n':
                 if len(word) > 0:
-                    word = suggest_word(word, dictionary)
+                    word = suggest_word_mod(word, hash_table)
                     new_text += word + c
                     word = ""
                 else:
@@ -55,7 +84,7 @@ def main():
             else:
                 word += c
 
-    word = suggest_word(word, dictionary)
+    word = suggest_word_mod(word, hash_table)
     new_text += word
 
     file.write(new_text)
