@@ -5,16 +5,13 @@ import distance as ds
 def suggest_word(misspell, dictionary):
     if misspell in dictionary:
         return misspell
-
     best_word = ""
     best_distance = float('inf')
-
     for word in dictionary:
         distance = ds.levensthein_mod(misspell, word)
         if distance < best_distance:
             best_word = word
             best_distance = distance
-
     return best_word
 
 
@@ -43,12 +40,11 @@ def frequent_char(word):
 
 def suggest_word_mod(misspell, hash_table):
     dictionary = hash_table[frequent_char(misspell)]
-    suggest_word(misspell, dictionary)
+    return suggest_word(misspell, dictionary)
 
 
 def main():
-    "Create hash_table"
-
+    # Opening word base
     '''file = open("words_alpha.txt", "r")
     dictionary = file.readlines()
     for i in range(len(dictionary)):
@@ -61,12 +57,37 @@ def main():
     file.write(str(hash_table))
     file.close()'''
 
+    # Loading the hash table
     file = open("hash_table.txt", "r")
     data = file.read()
     file.close()
-
     hash_table = ast.literal_eval(data)
-    print(hash_table["a"])
+
+    file = open("misspelled.txt", "r")
+    text = file.readlines()
+    file.close()
+
+    file = open("corrected.txt", "w")
+    word, new_text = "", ""
+
+    for line in text:
+        word = ""
+        for c in line:
+            if c == ' ' or c == '\n':
+                if len(word) > 0:
+                    word = suggest_word_mod(word, hash_table)
+                    new_text += word + c
+                    word = ""
+                else:
+                    new_text += c
+            else:
+                word += c
+
+    word = suggest_word_mod(word, hash_table)
+    new_text += word
+
+    file.write(new_text)
+    file.close()
 
 
 if __name__ == "__main__":
