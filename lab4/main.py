@@ -1,3 +1,4 @@
+import ast
 import distance as ds
 
 
@@ -46,49 +47,26 @@ def suggest_word_mod(misspell, hash_table):
 
 
 def main():
-    word1 = "car"
-    word2 = "cat"
-    print(f"levensthein:        {ds.levensthein(word1, word2)}")
-    print(f"hamming:            {ds.hamming(word1, word2)}")
-    print(f"indel:              {ds.indel(word1, word2)}")
-    print(f"levensthein_mod:    {ds.levensthein_mod(word1, word2)}")
-    print(f"hamming_mod:        {ds.hamming_mod(word1, word2)}")
-    print()
+    "Create hash_table"
 
-    file = open("words_alpha.txt", "r")
+    '''file = open("words_alpha.txt", "r")
     dictionary = file.readlines()
-    file.close()
     for i in range(len(dictionary)):
         dictionary[i] = dictionary[i][:-1]
+    file.close()'''
 
-    file = open("misspelled.txt", "r")
-    text = file.readlines()
+    # Creating a hash_table
+    '''hash_table = hash_words(dictionary)
+    file = open("hash_table.txt", "w")
+    file.write(str(hash_table))
+    file.close()'''
+
+    file = open("hash_table.txt", "r")
+    data = file.read()
     file.close()
 
-    file = open("corrected.txt", "w")
-
-    hash_table = hash_words(dictionary)
-
-    word, new_text = "", ""
-
-    for line in text:
-        word = ""
-        for c in line:
-            if c == ' ' or c == '\n':
-                if len(word) > 0:
-                    word = suggest_word_mod(word, hash_table)
-                    new_text += word + c
-                    word = ""
-                else:
-                    new_text += c
-            else:
-                word += c
-
-    word = suggest_word_mod(word, hash_table)
-    new_text += word
-
-    file.write(new_text)
-    file.close()
+    hash_table = ast.literal_eval(data)
+    print(hash_table["a"])
 
 
 if __name__ == "__main__":
