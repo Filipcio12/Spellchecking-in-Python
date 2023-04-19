@@ -46,6 +46,27 @@ def huffman(string):
 
     # Codes generation
     codes = {}
+    stack = [(root, "")]
+    while stack:
+        parent, code = stack.pop()
+        if parent.char is not None:
+            codes[parent.char] = code
+        if parent.left is not None:
+            stack.append((parent.left, code + '0'))
+        if parent.right is not None:
+            stack.append((parent.right, code + '1'))
+
+    return codes
 
 
-print(huffman(string))
+def convert_chars(string, codes):
+    output = ""
+    for c in string:
+        output += codes[c]
+    return output
+
+
+if __name__ == "__main__":
+    codes = huffman(string)
+    print(f"codes:  {codes}")
+    print(f"string: {convert_chars(string, codes)}")
