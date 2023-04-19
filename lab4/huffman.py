@@ -6,55 +6,42 @@ class Node:
         self.right = right
 
 
-string = 'I love data structures'
-
-
 def huffman(string):
     # Queue of characters
-    queue = {}
+    freq = {}
     for c in string:
-        if c not in queue:
-            queue[c] = 1
+        if c not in freq:
+            freq[c] = 1
         else:
-            queue[c] += 1
-    queue = list(queue.items())
-    queue = sorted(queue, key=lambda q: q[1])
+            freq[c] += 1
 
-    pqueue = []
-    for element in queue:
-        pqueue.append(Node(element[1], element[0]))
+    queue = []
+    for c in freq:
+        queue.append(Node(freq[c], c))
+
+    queue = sorted(queue, key=lambda n: n.val)
 
     # Heap generation
     root = None
-    while True:
-        element1 = pqueue.pop(0)
-        element2 = pqueue.pop(0)
+    while len(queue) > 1:
+        element1 = queue.pop(0)
+        element2 = queue.pop(0)
         sum = element1.val + element2.val
         root = Node(sum, None, element1, element2)
-        if len(pqueue) == 0:
-            break
-
-        to_append = True
-        for i in range(len(pqueue)):
-            if sum < pqueue[i].val:
-                pqueue.insert(i, root)
-                to_append = False
-                break
-
-        if to_append:
-            pqueue.append(root)
+        queue.append(root)
+        queue = sorted(queue, key=lambda n: n.val)
 
     # Codes generation
     codes = {}
     stack = [(root, "")]
     while stack:
-        parent, code = stack.pop()
+        parent, code = stack.pop(0)
         if parent.char is not None:
             codes[parent.char] = code
         if parent.left is not None:
-            stack.append((parent.left, code + '0'))
+            stack.append((parent.left, code + "0"))
         if parent.right is not None:
-            stack.append((parent.right, code + '1'))
+            stack.append((parent.right, code + "1"))
 
     return codes
 
@@ -67,6 +54,7 @@ def convert_chars(string, codes):
 
 
 if __name__ == "__main__":
+    string = "I love data structures"
     codes = huffman(string)
     print(f"codes:  {codes}")
     print(f"string: {convert_chars(string, codes)}")
