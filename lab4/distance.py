@@ -125,3 +125,18 @@ def levensthein_mod(word1, word2):
             table[i][j] = min(table[i - 1][j] + 1, table[i][j - 1] + 1,
                               table[i - 1][j - 1] + C(word1[j - 1], word2[i - 1]))
     return table[b - 1][a - 1]
+
+
+def main():
+    string1 = "delete"
+    string2 = "replace"
+
+    print(f"hamming:            {hamming(string1, string2)}")
+    print(f"levensthein:        {levensthein(string1, string2)}")
+    print(f"indel:              {indel(string1, string2)}")
+    print(f"hamming_mod:        {hamming_mod(string1, string2)}")
+    print(f"levensthein_mod:    {levensthein_mod(string1, string2)}")
+
+
+if __name__ == "__main__":
+    main()
